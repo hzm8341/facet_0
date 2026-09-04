@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-03T12:48:48.748201+00:00",
+  "project_root": "/home/hzm/code/facet_0",
+  "platform": {
+    "system": "Linux",
+    "release": "7.0.0-28-generic",
+    "machine": "x86_64",
+    "python": "3.11.16",
+    "python_executable": "/home/hzm/code/facet_0/third_party/openpi/.venv/bin/python"
+  },
+  "gpu": [
+    {
+      "index": "0",
+      "name": "NVIDIA GeForce RTX 5090",
+      "memory.total": "32607",
+      "driver_version": "595.84",
+      "compute_cap": "12.0"
+    }
+  ],
+  "disk": {
+    "total_bytes": 1966736678912,
+    "used_bytes": 675910717440,
+    "free_bytes": 1190845710336
+  },
+  "assets": {
+    "checkpoint_exists": true,
+    "dataset_exists": true
+  },
+  "openpi": {
+    "root": "/home/hzm/code/facet_0/third_party/openpi",
+    "commit": "215abfb217dbac7d5f1273282331b9b1866c0479",
+    "commit_date": "2026-08-24T16:27:12+00:00",
+    "clean": true,
+    "submodules": [
+      "d1dc83afd89ded4379851257fe5d85632d31d5ec third_party/aloha (d1dc83a)",
+      " f78abd68ee283de9f9be3c8f7e2a9ad60246e95c third_party/libero (f78abd6)"
+    ]
+  },
+  "packages": {
+    "openpi": "0.1.0",
+    "jax": "0.5.3",
+    "jaxlib": "0.5.3",
+    "jax-cuda12-plugin": "0.5.3",
+    "flax": "0.10.2",
+    "orbax-checkpoint": "0.11.13",
+    "numpy": "1.26.4",
+    "torch": "2.7.1",
+    "transformers": "4.53.2",
+    "lerobot": "0.1.0"
+  },
+  "jax_smoke_test": {
+    "jax_version": "0.5.3",
+    "backend": "gpu",
+    "devices": [
+      "cuda:0"
+    ],
+    "matrix_size": 1024,
+    "result_shape": [
+      1024,
+      1024
+    ],
+    "result_dtype": "float32",
+    "all_finite": true,
+    "elapsed_seconds": 1.044466
+  },
+  "success": true
+}

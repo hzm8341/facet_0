@@ -1,0 +1,31 @@
+# Stage 5 alignment training -- full train-split run.
+#
+# DO NOT run this until `overfit.yaml` has been run and both action_loss (should stay ~constant,
+# since the backbone is frozen -- see wrench_head_trainable_filter) and wrench_loss have been
+# confirmed to collapse on the fixed sequence pool (FACET0_REPRODUCTION_PLAN.md Stage 5
+# acceptance criteria; HANDOFF.md Sec 10.5). `num_steps`/`learning_rate` below are a
+# `experimental` starting point, not a paper-specified schedule -- revisit once the overfit run's
+# `runs/alignment/overfit_v1/train_history.json` is in hand.
+#
+# Usage: PYTHONPATH=src third_party/openpi/.venv/bin/python -m facet0.training.train_alignment \
+#          --config configs/alignment/full.yaml
+
+checkpoint: Facet-0/facet0-post-training      # inferred
+dataset: ManuFacet-1K/Facet0-1                # inferred
+split_path: configs/splits/facet0_1_seed20260903.json   # project (Stage 4 split; train=2097 episodes)
+output_dir: runs/alignment/full_v1            # project
+
+mode: full                                    # experimental
+num_steps: 20000                              # experimental
+batch_size: 16                                # experimental
+learning_rate: 3.0e-5                         # experimental (lower than overfit.yaml: full-data run)
+seed: 0                                       # project
+
+action_horizon: 50                            # paper
+max_token_len: 200                            # paper (pi05 default)
+wrench_history_len: 10                        # paper (K=10)
+wrench_head_width: 512                        # experimental
+lambda_pre: 0.1                               # paper (initial wrench loss weight)
+
+log_every: 50                                 # project
+checkpoint_every: 1000                        # project

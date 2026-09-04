@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-03T13:02:59.979138+00:00",
+  "checkpoint": "/home/hzm/code/facet_0/Facet-0/facet0-post-training",
+  "dataset": "/home/hzm/code/facet_0/ManuFacet-1K/Facet0-1",
+  "seed": 20260903,
+  "num_steps": 10,
+  "restore_seconds": 4.968547,
+  "sampling": "uniform episodes without replacement; uniform frame within episode",
+  "camera_mapping_status": "inferred_from_public_names",
+  "summary": {
+    "requested_samples": 3,
+    "successful_samples": 3,
+    "failed_samples": 0,
+    "all_outputs_finite": true,
+    "warm_sample_count": 2,
+    "wall_ms": {
+      "mean": 65.689,
+      "p50": 65.689,
+      "p95": 67.76,
+      "max": 67.99
+    },
+    "model_infer_ms": {
+      "mean": 53.911,
+      "p50": 53.911,
+      "p95": 54.034,
+      "max": 54.048
+    },
+    "first_action_mae": {
+      "translation": 0.000688,
+      "rotation": 0.009331,
+      "gripper": 0.301805
+    },
+    "task_index_counts": {
+      "0": 1,
+      "8": 2
+    },
+    "subtask_counts": {
+      "2": 2,
+      "3": 1
+    }
+  },
+  "records": [
+    {
+      "sample_index": 0,
+      "episode": 500,
+      "frame": 236,
+      "success": true,
+      "task_index": 0,
+      "subtask": 2,
+      "valid_horizon": 50,
+      "wall_ms": 10904.851,
+      "model_infer_ms": 10581.066,
+      "all_finite": true,
+      "action_min": -0.4027973413467407,
+      "action_max": 2.9695804119110107,
+      "translation_mae": 0.0004460910859052092,
+      "rotation_mae": 0.0080954534932971,
+      "gripper_mae": 0.6713094711303711,
+      "chunk_mae_by_channel": [
+        0.006459338590502739,
+        0.002259686589241028,
+        0.006456267088651657,
+        0.028726940974593163,
+        0.026353273540735245,
+        0.018187252804636955,
+        0.500994086265564
+      ],
+      "input_sha256": "dec369fa2336c991e561084b99386ad25ff49c1410dad0b63331bfb567172975",
+      "noise_sha256": "3db6d02aad399b88cc7a6b36076924a97501302f522d2f8f66f2c58e4c1a947c",
+      "output_sha256": "b88aa531bd87bb6072bea78138e099133010fc3f2b7b96b89a2b41e96b2b8836",
+      "first_action": [
+        -0.3992454409599304,
+        -0.389109343290329,
+        0.2543630599975586,
+        0.31554174423217773,
+        2.9670205116271973,
+        0.2560647130012512,
+        0.011043435893952847
+      ]
+    },
+    {
+      "sample_index": 1,
+      "episode": 108,
+      "frame": 239,
+      "success": true,
+      "task_index": 8,
+      "subtask": 2,
+      "valid_horizon": 50,
+      "wall_ms": 67.99,
+      "model_infer_ms": 54.048,
+      "all_finite": true,
+      "action_min": -2.2164745330810547,
+      "action_max": 2.2302300930023193,
+      "translation_mae": 0.0012157857418060303,
+      "rotation_mae": 0.01520636398345232,
+      "gripper_mae": 0.10311472415924072,
+      "chunk_mae_by_channel": [
+        0.004232278559356928,
+        0.006413567811250687,
+        0.006291857920587063,
+        0.015758071094751358,
+        0.0238031055778265,
+        0.006339539773762226,
+        0.8231452107429504
+      ],
+      "input_sha256": "eab33ae731215e4b7d62bf26549564f7466eef392b31025bd9fb428c9137810b",
+      "noise_sha256": "3731b95dcda813f932e18f5433882ce33f40ed82402ed13ce43851a93af9386d",
+      "output_sha256": "81220df302dad7a25b91dfa1e3ece0644f2a5fe7be31b8d19518f250469ef19b",
+      "first_action": [
+        -0.4913012385368347,
+        -0.3643606901168823,
+        0.31972360610961914,
+        -2.2010374069213867,
+        2.2302300930023193,
+        -0.021454639732837677,
+        0.9972323775291443
+      ]
+    },
+    {
+      "sample_index": 2,
+      "episode": 670,
+      "frame": 589,
+      "success": true,
+      "task_index": 8,
+      "subtask": 3,
+      "valid_horizon": 50,
+      "wall_ms": 63.387,
+      "model_infer_ms": 53.774,
+      "all_finite": true,
+      "action_min": -2.2497355937957764,
+      "action_max": 2.2938902378082275,
+      "translation_mae": 0.000403345882659778,
+      "rotation_mae": 0.004689822439104319,
+      "gripper_mae": 0.13099032640457153,
+      "chunk_mae_by_channel": [
+        0.005333923269063234,
+        0.0007717484259046614,
+        0.010661207139492035,
+        0.006724657956510782,
+        0.01122003048658371,
+        0.023060770705342293,
+        0.3184731602668762
+      ],
+      "input_sha256": "c3ce300bb19e017478bf0c9de2701914d2fa67a8061b77fc4e9e1816bb244e78",
+      "noise_sha256": "1f66e342512555b2242b726553946687a26221342f2bf3fde473f915b155b15a",
+      "output_sha256": "83f40f889f19502ae260b473cc0b54724f39b68e13df4caeceb2f08bab98358b",
+      "first_action": [
+        -0.01959984563291073,
+        -0.3944988548755646,
+        0.25411301851272583,
+        -2.2480053901672363,
+        2.2607638835906982,
+        -0.15467040240764618,
+        0.9976570010185242
+      ]
+    }
+  ]
+}

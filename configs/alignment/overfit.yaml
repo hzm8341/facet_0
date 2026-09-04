@@ -1,0 +1,31 @@
+# Stage 5 alignment training -- small-data overfit gate.
+#
+# Per FACET0_REPRODUCTION_PLAN.md Stage 5 / HANDOFF.md Sec 10.3/10.5: this MUST be run, and must
+# show both action and wrench flow-matching loss collapsing on a fixed, memorized pool of
+# sequences, before `full.yaml` (full train-split training) is ever run. See
+# `src/facet0/training/train_alignment.py::AlignmentTrainConfig` for field docs and provenance
+# tags (paper / inferred / experimental).
+#
+# Usage: PYTHONPATH=src third_party/openpi/.venv/bin/python -m facet0.training.train_alignment \
+#          --config configs/alignment/overfit.yaml
+
+checkpoint: Facet-0/facet0-post-training      # inferred: the only released checkpoint
+dataset: ManuFacet-1K/Facet0-1                # inferred: the only released public dataset
+split_path: configs/splits/facet0_1_seed20260903.json   # project (Stage 4 split)
+output_dir: runs/alignment/overfit_v1         # project
+
+mode: overfit                                 # experimental
+num_overfit_sequences: 64                     # paper (range 32-128); midpoint chosen
+num_steps: 300                                # experimental: expect near-zero wrench loss well before this
+batch_size: 8                                 # experimental
+learning_rate: 1.0e-4                         # experimental
+seed: 0                                       # project
+
+action_horizon: 50                            # paper
+max_token_len: 200                            # paper (pi05 default)
+wrench_history_len: 10                        # paper (K=10)
+wrench_head_width: 512                        # experimental
+lambda_pre: 0.1                               # paper (initial wrench loss weight)
+
+log_every: 10                                 # project
+checkpoint_every: 100                         # project

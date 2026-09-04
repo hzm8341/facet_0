@@ -1,0 +1,18 @@
+.tools/
+third_party/
+artifacts/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+
+# Released checkpoint and public dataset -- fetched separately, see HANDOFF.md/ENVIRONMENT_SETUP.md.
+# Never committed: multi-GB, not our own code, and redistribution is not ours to decide.
+Facet-0/
+ManuFacet-1K/
+
+# Copyrighted paper PDF -- not ours to redistribute.
+Facet-0.pdf
+
+# Local training run outputs (checkpoints, logs) -- regenerable, large binary .npz files.
+runs/

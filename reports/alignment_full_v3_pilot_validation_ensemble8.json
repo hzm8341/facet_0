@@ -1,0 +1,60 @@
+{
+  "split": "validation",
+  "num_sequences": 8,
+  "num_sampling_steps": 10,
+  "num_samples_per_prediction": 8,
+  "seed": 0,
+  "head_path": "runs/alignment/full_v3_pilot/wrench_head_final.npz",
+  "model": {
+    "channel_mae": [
+      1.3609893187229098,
+      0.9368855822933176,
+      3.2588538818183492,
+      0.06447356007484302,
+      0.1258529182434428,
+      0.059869390818203895
+    ],
+    "channel_peak_error": [
+      26.304120302200317,
+      3.03963565826416,
+      43.85440635681152,
+      0.22664951533079147,
+      2.9989252239465714,
+      0.27995099127292633
+    ],
+    "exceedance_recall": null
+  },
+  "constant_baseline": {
+    "channel_mae": [
+      0.8085491553030378,
+      0.5322142070759841,
+      1.0670990443131962,
+      0.018922588263785903,
+      0.05299197662178977,
+      0.046809859640000624
+    ],
+    "channel_peak_error": [
+      25.53346824645996,
+      2.7059531211853027,
+      46.10845375061035,
+      0.18735623359680176,
+      2.933767855167389,
+      0.24233201146125793
+    ],
+    "exceedance_recall": null
+  },
+  "mean_channel_mae": {
+    "model": 0.9678207753285112,
+    "constant_baseline": 0.42109780520296575,
+    "relative_improvement": -1.298327759894235
+  },
+  "beats_constant_baseline": false,
+  "beats_baseline_per_channel": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

@@ -18,6 +18,46 @@ WRENCH_DIM = 6
 _STATE_WRENCH_SLICE = slice(7, 13)
 
 
+@dataclasses.dataclass(frozen=True)
+class WrenchNormalizer:
+    """Quantile normalization for the six FACET wrist force/torque channels."""
+
+    q01: np.ndarray
+    q99: np.ndarray
+
+    @classmethod
+    def from_openpi_norm_stats(cls, norm_stats: dict) -> "WrenchNormalizer":
+        state_stats = norm_stats["state"]
+        q01 = np.asarray(state_stats.q01, dtype=np.float32)[_STATE_WRENCH_SLICE]
+        q99 = np.asarray(state_stats.q99, dtype=np.float32)[_STATE_WRENCH_SLICE]
+        if q01.shape != (WRENCH_DIM,) or q99.shape != (WRENCH_DIM,):
+            raise ValueError("Checkpoint state statistics do not contain six wrench channels at [7:13].")
+        if np.any(q99 <= q01):
+            raise ValueError("Every wrench q99 value must be greater than q01.")
+        return cls(q01=q01, q99=q99)
+
+    def normalize(self, wrench: np.ndarray) -> np.ndarray:
+        wrench = np.asarray(wrench, dtype=np.float32)
+        return ((wrench - self.q01) / (self.q99 - self.q01 + 1e-6) * 2.0 - 1.0).astype(
+            np.float32
+        )
+
+    def unnormalize(self, wrench: np.ndarray) -> np.ndarray:
+        wrench = np.asarray(wrench, dtype=np.float32)
+        return (((wrench + 1.0) * 0.5) * (self.q99 - self.q01) + self.q01).astype(
+            np.float32
+        )
+
+    def normalize_delta(self, delta: np.ndarray) -> np.ndarray:
+        """Scale a wrench difference without applying the absolute-value offset."""
+        delta = np.asarray(delta, dtype=np.float32)
+        return (delta * 2.0 / (self.q99 - self.q01 + 1e-6)).astype(np.float32)
+
+    def unnormalize_delta(self, delta: np.ndarray) -> np.ndarray:
+        delta = np.asarray(delta, dtype=np.float32)
+        return (delta * 0.5 * (self.q99 - self.q01)).astype(np.float32)
+
+
 def extract_wrench(state: np.ndarray) -> np.ndarray:
     """Slice the 6-dim wrench ``[fx, fy, fz, tx, ty, tz]`` out of a 13-dim FACET state."""
     array = np.asarray(state, dtype=np.float32)

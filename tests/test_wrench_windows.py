@@ -9,6 +9,7 @@ import pytest
 from facet0.data.manufacet import ManuFacetDataset
 from facet0.data.wrench_windows import (
     WRENCH_DIM,
+    WrenchNormalizer,
     build_wrench_window,
     causal_wrench_window,
     extract_wrench,
@@ -33,6 +34,25 @@ def test_extract_wrench_slices_last_six_dims():
 def test_extract_wrench_rejects_short_state():
     with pytest.raises(ValueError):
         extract_wrench(np.zeros(12, dtype=np.float32))
+
+
+def test_wrench_normalizer_round_trip_and_broadcasting():
+    normalizer = WrenchNormalizer(
+        q01=np.asarray([-10, -20, -30, -1, -2, -3], dtype=np.float32),
+        q99=np.asarray([10, 20, 30, 1, 2, 3], dtype=np.float32),
+    )
+    wrench = np.asarray(
+        [[-10, -20, -30, -1, -2, -3], [10, 20, 30, 1, 2, 3]],
+        dtype=np.float32,
+    )
+    normalized = normalizer.normalize(wrench)
+    np.testing.assert_allclose(normalized[0], -1.0, atol=1e-6)
+    np.testing.assert_allclose(normalized[1], 1.0, atol=1e-6)
+    np.testing.assert_allclose(normalizer.unnormalize(normalized), wrench, atol=2e-6)
+    delta = wrench[1] - wrench[0]
+    np.testing.assert_allclose(
+        normalizer.unnormalize_delta(normalizer.normalize_delta(delta)), delta, atol=2e-6
+    )
 
 
 def test_causal_wrench_window_mid_episode_has_no_padding():

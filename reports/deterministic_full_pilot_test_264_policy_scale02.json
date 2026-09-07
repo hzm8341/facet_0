@@ -1,0 +1,87 @@
+{
+  "split": "test",
+  "num_sequences": 264,
+  "seed": 20260905,
+  "head_path": "runs/alignment/deterministic_full_pilot/wrench_head_final.npz",
+  "action_condition": "frozen_facet_policy_prediction",
+  "policy_num_steps": 10,
+  "residual_scale": 0.2,
+  "residual_scale_sweep": [
+    {
+      "scale": 0.2,
+      "mean_channel_mae": 1.0005287223081236,
+      "channel_mae": [
+        1.8894351961299702,
+        1.4168143606923769,
+        2.292466266153204,
+        0.12038445135366087,
+        0.20092237614515346,
+        0.08314968337437616
+      ]
+    }
+  ],
+  "model": {
+    "channel_mae": [
+      1.8894351961299702,
+      1.4168143606923769,
+      2.292466266153204,
+      0.12038445135366087,
+      0.20092237614515346,
+      0.08314968337437616
+    ],
+    "channel_peak_error": [
+      49.942697525024414,
+      48.09294366836548,
+      85.63833045959473,
+      9.784299790859222,
+      6.561566591262817,
+      2.006591349840164
+    ],
+    "exceedance_recall": null
+  },
+  "constant_baseline": {
+    "channel_mae": [
+      1.9595866413920904,
+      1.5412399210265255,
+      2.1948140916896266,
+      0.12209428824471569,
+      0.19699875598790934,
+      0.08741705613044788
+    ],
+    "channel_peak_error": [
+      48.99320602416992,
+      47.33223915100098,
+      87.14766311645508,
+      9.651926517486572,
+      6.847894191741943,
+      1.9919411540031433
+    ],
+    "exceedance_recall": null
+  },
+  "normalized_channel_mae": [
+    0.12032490223646164,
+    0.08369442820549011,
+    0.06738266348838806,
+    0.13226406276226044,
+    0.25117456912994385,
+    0.2403963953256607
+  ],
+  "force_mae_mean": 1.8662386076585171,
+  "torque_mae_mean": 0.13481883695773017,
+  "baseline_force_mae_mean": 1.8985468847027474,
+  "baseline_torque_mae_mean": 0.13550336678769095,
+  "mean_channel_mae": {
+    "model": 1.0005287223081236,
+    "constant_baseline": 1.0170251257452192,
+    "relative_improvement": 0.0162202516137524
+  },
+  "beats_constant_baseline": true,
+  "beats_baseline_per_channel": [
+    true,
+    true,
+    false,
+    true,
+    false,
+    true
+  ]
+}

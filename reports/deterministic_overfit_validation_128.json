@@ -1,0 +1,71 @@
+{
+  "split": "validation",
+  "num_sequences": 128,
+  "seed": 20260905,
+  "head_path": "runs/alignment/deterministic_overfit/wrench_head_final.npz",
+  "action_condition": "demonstration_action_chunk_offline_oracle",
+  "model": {
+    "channel_mae": [
+      3.8181296956268223,
+      1.4851965842783943,
+      7.6755193645008335,
+      0.15954231245617367,
+      0.4241356266237611,
+      0.1081071298579543
+    ],
+    "channel_peak_error": [
+      122.39320945739746,
+      27.835256576538086,
+      234.38371658325195,
+      7.899856716394424,
+      18.939269185066223,
+      2.211613729596138
+    ],
+    "exceedance_recall": null
+  },
+  "constant_baseline": {
+    "channel_mae": [
+      2.1165454237507886,
+      1.2980622321933755,
+      2.6383778037093886,
+      0.09689481216709876,
+      0.20633083335333696,
+      0.06388386705802745
+    ],
+    "channel_peak_error": [
+      58.83852195739746,
+      28.111953735351562,
+      87.002685546875,
+      3.8372511863708496,
+      8.845226168632507,
+      0.634947806596756
+    ],
+    "exceedance_recall": null
+  },
+  "normalized_channel_mae": [
+    0.24314968287944794,
+    0.08773381263017654,
+    0.22560696303844452,
+    0.17528590559959412,
+    0.5302140712738037,
+    0.31255102157592773
+  ],
+  "force_mae_mean": 4.326281881468684,
+  "torque_mae_mean": 0.23059502297929635,
+  "baseline_force_mae_mean": 2.0176618198845175,
+  "baseline_torque_mae_mean": 0.12236983752615439,
+  "mean_channel_mae": {
+    "model": 2.2784384522239898,
+    "constant_baseline": 1.0700158287053358,
+    "relative_improvement": -1.1293502311837602
+  },
+  "beats_constant_baseline": false,
+  "beats_baseline_per_channel": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

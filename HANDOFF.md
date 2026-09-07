@@ -2,7 +2,8 @@
 
 > 交接日期：2026-09-03  
 > 项目目录：`/home/hzm/code/facet_0`  
-> 当前状态：阶段 0～4 已完成；下一阶段为 action-wrench 联合预测近似复现。
+> 当前状态：阶段 0～5 的公开数据离线工作已完成；阶段 6～10 已建立可测试的软件
+> proxy/安全协议，但完整训练与真机评估受未发布标签、rollout 和硬件阻塞。
 
 ## 1. 项目目标
 
@@ -444,3 +445,76 @@ XLA_PYTHON_CLIENT_PREALLOCATE=false \
 
 以上检查通过后，即可从阶段 5 开始开发。
 
+## 14. 2026-09-05 阶段 5 开发续报（优先于第 10 节）
+
+第 10 节列出的独立 wrench head、因果窗口、训练入口和离线指标已经实现。当前状态不是
+“阶段 5 尚未开始”，而是“训练机制通过、验证基线尚未通过”。完整实验记录见
+reports/alignment_stage5_pilots.md。
+
+本轮完成：
+
+- wrench 使用官方 checkpoint state q01/q99 的 7:13 通道归一化；
+- 支持绝对目标与相对当前 wrench 的残差目标；
+- 新增 scripts/evaluate_alignment.py，在物理单位下比较 MAE、峰值误差和常数基线；
+- overfit v2/v3 均稳定下降，未出现 NaN/OOM；
+- 1000 步 full v2/v3 pilot 均完成；
+- 原始 FACET action backbone 全程冻结，所有新权重独立保存。
+
+固定 8 条 validation 序列的探索性结论：
+
+- 常数基线平均通道 MAE：0.421；
+- overfit-v2 绝对目标、单样本：1.733；
+- full-v2 pilot、单样本：1.983；
+- overfit-v3 残差目标、8 样本均值：0.786；
+- full-v3 pilot、8 样本均值：0.968。
+
+因此阶段 5 的 validation gate 仍为失败，暂时不要启动 20,000 步训练。下一优先级是实现
+确定性的 residual Huber/L1 control head，并对接触变化窗口做分层/过采样；详见续报。
+
+新增关键路径：
+
+    configs/alignment/overfit_v2_normalized.yaml
+    configs/alignment/full_v2_normalized.yaml
+    configs/alignment/overfit_v3_residual.yaml
+    configs/alignment/full_v3_residual.yaml
+    scripts/evaluate_alignment.py
+    reports/alignment_stage5_pilots.md
+    runs/alignment/overfit_v2_normalized/
+    runs/alignment/full_v2_pilot/
+    runs/alignment/overfit_v3_residual/
+    runs/alignment/full_v3_pilot/
+
+当前完整验证为 65 passed；原第 13 节中的 5 passed 是早期数量，已经过时。
+
+## 15. 2026-09-05 阶段 5 最终门槛与阶段 6～10 状态
+
+确定性 residual control 使用 2,048 个分层训练窗口，零输出严格退化为保持当前 wrench
+基线。validation 上使用冻结 FACET policy 动作，并只在 validation 标定 residual scale：
+
+- scale 候选：0、0.1、0.2、0.35、0.5、0.75、1.0；
+- 选中 scale：0.2；
+- validation（128 序列）：1.038 vs baseline 1.070，改善 3.00%；
+- untouched test（264 episodes 各一帧）：1.0005 vs baseline 1.0170，改善 1.62%；
+- test 中 4/6 单通道优于基线；force/torque 分组均值均小幅改善；
+- action golden regression：通过。
+
+这只是公开子集上的离线近似，不等价于论文真机结果。oracle action、policy action 和
+zero-action 消融报告均保存在 reports/，不得只引用 oracle 结果。
+
+阶段 6～10 新增的软件边界：
+
+- VQA 元数据 proxy、structured mask 和 4:1 update scheduler；
+- distributional critic、四个实验性辅助 head、reward proxy 与候选排序；
+- 四流 1024 维 bottleneck、bounded actor、twin critic、TD3 target 与 BC loss；
+- fail-closed robot safety filter、shadow-only 安全配置；
+- 五任务评估协议骨架和 95% Wilson 区间。
+
+仍无法在本机完成的外部依赖：
+
+1. 公共数据没有作者编写的 subtask/next-instruction 文本标签；
+2. 没有失败、人工干预、恢复和 reward rollout，不能训练/校准论文 critic；
+3. 没有论文的 local-adaptation replay 与对应十示范 reward；
+4. 没有机械臂、相机/力传感器标定、控制 API 和安全评审；
+5. 因此不能产生阶段 9 真机结果或阶段 10 的五任务成功率。
+
+在这些依赖到位前，不得将 synthetic tests 或离线 MAE 写成论文级复现。

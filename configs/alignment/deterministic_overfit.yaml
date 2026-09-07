@@ -1,0 +1,20 @@
+checkpoint: Facet-0/facet0-post-training
+dataset: ManuFacet-1K/Facet0-1
+split_path: configs/splits/facet0_1_seed20260903.json
+output_dir: runs/alignment/deterministic_overfit
+
+mode: overfit
+pool_size: 64
+candidate_multiplier: 1
+high_change_fraction: 0.0
+num_steps: 2000
+batch_size: 64
+learning_rate: 1.0e-3
+weight_decay: 1.0e-5
+huber_delta: 0.1
+history_len: 10
+horizon: 50
+width: 256
+seed: 0
+log_every: 50
+checkpoint_every: 500

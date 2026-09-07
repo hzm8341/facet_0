@@ -1,0 +1,8 @@
+# Experimental defaults for replay/shadow mode only. Not approved for hardware.
+workspace_low: [0.20, -0.50, 0.05]
+workspace_high: [0.80, 0.50, 0.80]
+max_translation_step: 0.005
+max_rotation_step: 0.02
+wrench_abs_limit: [20.0, 20.0, 30.0, 1.5, 1.5, 1.0]
+command_timeout_seconds: 0.25
+mode: shadow

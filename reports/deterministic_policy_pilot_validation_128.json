@@ -1,0 +1,72 @@
+{
+  "split": "validation",
+  "num_sequences": 128,
+  "seed": 20260905,
+  "head_path": "runs/alignment/deterministic_policy_pilot/wrench_head_final.npz",
+  "action_condition": "frozen_facet_policy_prediction",
+  "policy_num_steps": 10,
+  "model": {
+    "channel_mae": [
+      2.4714421494773102,
+      1.2730072130595358,
+      3.906357443332672,
+      0.12535016995086912,
+      0.25287157250693343,
+      0.0807069782167577
+    ],
+    "channel_peak_error": [
+      59.71103286743164,
+      22.32758617401123,
+      84.27867889404297,
+      4.308737516403198,
+      8.79337140917778,
+      0.5972216725349426
+    ],
+    "exceedance_recall": null
+  },
+  "constant_baseline": {
+    "channel_mae": [
+      2.1165454237507886,
+      1.2980622321933755,
+      2.6383778037093886,
+      0.09689481216709876,
+      0.20633083335333696,
+      0.06388386705802745
+    ],
+    "channel_peak_error": [
+      58.83852195739746,
+      28.111953735351562,
+      87.002685546875,
+      3.8372511863708496,
+      8.845226168632507,
+      0.634947806596756
+    ],
+    "exceedance_recall": null
+  },
+  "normalized_channel_mae": [
+    0.15738844871520996,
+    0.07519944757223129,
+    0.11481983959674835,
+    0.13771981000900269,
+    0.3161160945892334,
+    0.23333466053009033
+  ],
+  "force_mae_mean": 2.5502689352898393,
+  "torque_mae_mean": 0.15297624022485343,
+  "baseline_force_mae_mean": 2.0176618198845175,
+  "baseline_torque_mae_mean": 0.12236983752615439,
+  "mean_channel_mae": {
+    "model": 1.3516225877573467,
+    "constant_baseline": 1.0700158287053358,
+    "relative_improvement": -0.26317999369480405
+  },
+  "beats_constant_baseline": false,
+  "beats_baseline_per_channel": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ]
+}

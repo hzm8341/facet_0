@@ -38,7 +38,7 @@ from openpi.training import config as training_config
 
 from facet0.data.manufacet import ManuFacetDataset
 from facet0.data.transforms import EEF_DELTA_MASK, FacetInputs
-from facet0.data.wrench_windows import WRENCH_DIM, build_wrench_window
+from facet0.data.wrench_windows import WRENCH_DIM, WrenchNormalizer, build_wrench_window
 from facet0.models.joint_action_wrench import (
     JointActionWrenchConfig,
     JointActionWrenchModel,
@@ -75,6 +75,8 @@ class AlignmentTrainConfig:
     wrench_history_len: int = 10  # paper (K=10)
     wrench_head_width: int = 512  # experimental
     lambda_pre: float = 0.1  # paper (initial wrench loss weight)
+    wrench_normalization: str = "checkpoint_state_quantile"  # inferred
+    wrench_target_representation: str = "absolute"  # experimental: absolute or delta_from_current
 
     log_every: int = 10  # project
     checkpoint_every: int = 200  # project
@@ -152,6 +154,8 @@ def build_example(
     delta_actions: openpi_transforms.DeltaActions,
     normalize_transform: openpi_transforms.Normalize,
     model_input_transforms: list,
+    wrench_normalizer: WrenchNormalizer,
+    wrench_target_representation: str,
     action_horizon: int,
     wrench_history_len: int,
 ) -> dict[str, np.ndarray]:
@@ -172,9 +176,17 @@ def build_example(
     window = build_wrench_window(
         dataset, episode_index, frame_index, history_len=wrench_history_len, horizon=action_horizon
     )
-    data["wrench_history"] = window.history
+    data["wrench_history"] = wrench_normalizer.normalize(window.history)
     data["wrench_history_valid"] = window.history_valid
-    data["wrench_target"] = window.future
+    if wrench_target_representation == "absolute":
+        data["wrench_target"] = wrench_normalizer.normalize(window.future)
+    elif wrench_target_representation == "delta_from_current":
+        data["wrench_target"] = wrench_normalizer.normalize_delta(window.future - window.history[-1])
+    else:
+        raise ValueError(
+            "wrench_target_representation must be 'absolute' or 'delta_from_current', "
+            f"got {wrench_target_representation!r}"
+        )
     data["wrench_target_valid"] = window.future_valid
     return data
 
@@ -197,6 +209,12 @@ def build_model_and_transforms(config: AlignmentTrainConfig):
     params = _model.restore_params(config.checkpoint / "params", dtype=jnp.bfloat16)
     pi0_model = pi0_cfg.load(params, remove_extra_params=False)
     norm_stats = normalize.load(config.checkpoint / "assets")
+    if config.wrench_normalization != "checkpoint_state_quantile":
+        raise ValueError(
+            "wrench_normalization must be 'checkpoint_state_quantile', "
+            f"got {config.wrench_normalization!r}"
+        )
+    wrench_normalizer = WrenchNormalizer.from_openpi_norm_stats(norm_stats)
     model_input_transforms = list(training_config.ModelTransformFactory()(pi0_cfg).inputs)
 
     facet_inputs = FacetInputs()
@@ -204,7 +222,14 @@ def build_model_and_transforms(config: AlignmentTrainConfig):
     normalize_transform = openpi_transforms.Normalize(norm_stats, use_quantiles=True)
 
     model = JointActionWrenchModel(pi0_model, config.joint_config(), rngs=nnx.Rngs(config.seed))
-    return model, facet_inputs, delta_actions, normalize_transform, model_input_transforms
+    return (
+        model,
+        facet_inputs,
+        delta_actions,
+        normalize_transform,
+        model_input_transforms,
+        wrench_normalizer,
+    )
 
 
 def save_wrench_head(model: JointActionWrenchModel, path: Path) -> None:
@@ -272,10 +297,23 @@ def run_training(config: AlignmentTrainConfig) -> list[dict[str, Any]]:
     dataset = ManuFacetDataset(config.dataset)
     splits = load_split(config.split_path)
     train_episodes = splits["train"]
-
-    model, facet_inputs, delta_actions, normalize_transform, model_input_transforms = build_model_and_transforms(
-        config
+    config.output_dir.mkdir(parents=True, exist_ok=True)
+    resolved_config = {
+        key: str(value) if isinstance(value, Path) else value
+        for key, value in dataclasses.asdict(config).items()
+    }
+    (config.output_dir / "resolved_config.json").write_text(
+        json.dumps(resolved_config, indent=2), encoding="utf-8"
     )
+
+    (
+        model,
+        facet_inputs,
+        delta_actions,
+        normalize_transform,
+        model_input_transforms,
+        wrench_normalizer,
+    ) = build_model_and_transforms(config)
     if config.resume_from is not None:
         logger.info("resuming wrench_head weights from %s", config.resume_from)
         load_wrench_head(model, config.resume_from)
@@ -289,6 +327,13 @@ def run_training(config: AlignmentTrainConfig) -> list[dict[str, Any]]:
     if config.mode == "overfit":
         fixed_pool = sample_sequence_pool(dataset, train_episodes, config.num_overfit_sequences, data_rng)
         logger.info("overfit mode: memorizing a fixed pool of %d sequences", len(fixed_pool))
+        (config.output_dir / "sequence_pool.json").write_text(
+            json.dumps(
+                [{"episode_index": episode, "frame_index": frame} for episode, frame in fixed_pool],
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
 
     step_rng = jax.random.key(config.seed)
     history: list[dict[str, Any]] = []
@@ -303,6 +348,8 @@ def run_training(config: AlignmentTrainConfig) -> list[dict[str, Any]]:
                 delta_actions=delta_actions,
                 normalize_transform=normalize_transform,
                 model_input_transforms=model_input_transforms,
+                wrench_normalizer=wrench_normalizer,
+                wrench_target_representation=config.wrench_target_representation,
                 action_horizon=config.action_horizon,
                 wrench_history_len=config.wrench_history_len,
             )
@@ -343,7 +390,6 @@ def run_training(config: AlignmentTrainConfig) -> list[dict[str, Any]]:
             # written every log_every steps (not just at the end) so a killed/interrupted run
             # doesn't lose its history -- `run_inference.py`-style long jobs in this environment
             # have been observed to be killed by something outside this process's control.
-            config.output_dir.mkdir(parents=True, exist_ok=True)
             (config.output_dir / "train_history.json").write_text(json.dumps(history, indent=2))
 
         if config.checkpoint_every and step > 0 and step % config.checkpoint_every == 0:

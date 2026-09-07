@@ -1,0 +1,19 @@
+# Protocol skeleton; physical fixtures, hardware and success adjudication remain unavailable.
+trials_per_method_task: 20
+confidence_interval: wilson_95
+tasks:
+  - RAM
+  - CPU
+  - Disk
+  - GPU
+  - retention_bar_close
+required_log_fields:
+  - initial_state_id
+  - method
+  - seed
+  - success
+  - duration_seconds
+  - intervention_count
+  - recovery_count
+  - max_abs_wrench
+  - safety_stop_reason

@@ -1,0 +1,22 @@
+# Stage 5 full train-split run. Start only after the normalized overfit gate is accepted.
+
+checkpoint: Facet-0/facet0-post-training
+dataset: ManuFacet-1K/Facet0-1
+split_path: configs/splits/facet0_1_seed20260903.json
+output_dir: runs/alignment/full_v2_normalized
+
+mode: full
+num_steps: 20000
+batch_size: 8
+learning_rate: 3.0e-5
+seed: 0
+
+action_horizon: 50
+max_token_len: 200
+wrench_history_len: 10
+wrench_head_width: 512
+lambda_pre: 0.1
+wrench_normalization: checkpoint_state_quantile
+
+log_every: 50
+checkpoint_every: 1000

@@ -12,7 +12,13 @@
 - [x] 阶段 2：FACET 输入输出适配层（2026-09-03；相机语义映射待官方确认）
 - [x] 阶段 3：官方 checkpoint 离线推理（2026-09-03；100/100 样本通过）
 - [x] 阶段 4：数据质量与离线评估基线（2026-09-03；全量视频码流仅抽样解码）
-- [ ] 阶段 5～10：训练扩展、真机与论文级评估
+- [x] 阶段 5：action-wrench 离线近似复现（2026-09-05；确定性 residual control
+  在冻结 scale 后通过 validation/test 平均 MAE 基线，随机 flow head 未通过）
+- [ ] 阶段 6：VQA proxy、4:1 调度与 mask 已实现；公开数据缺少人工 subtask 文本，未完成模型训练
+- [ ] 阶段 7：critic/价值排序离线接口和 synthetic tests 已实现；缺少失败与恢复 rollout
+- [ ] 阶段 8：bottleneck/TD3+BC 数值组件已实现；缺少带 reward 的 replay 与十示范协议数据
+- [ ] 阶段 9：shadow-mode safety filter 已实现；缺少机器人、标定和控制 API
+- [ ] 阶段 10：任务协议与 Wilson 区间已实现；尚无真机 trials
 
 当前验证结果：FACET checkpoint 的 51 个参数叶节点与标准 OpenPI π0.5 配置逐项完全匹配，且已在 RTX 5090 上完成无裁剪恢复。详见 `reports/openpi_compatibility.md`。
 

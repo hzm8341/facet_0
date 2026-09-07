@@ -1,0 +1,59 @@
+{
+  "split": "validation",
+  "num_sequences": 8,
+  "num_sampling_steps": 10,
+  "seed": 0,
+  "head_path": "runs/alignment/overfit_v3_residual/wrench_head_final.npz",
+  "model": {
+    "channel_mae": [
+      2.339746817050736,
+      1.946113696840943,
+      4.2789404634080945,
+      0.13434679511822556,
+      0.2086763665158953,
+      0.0830759794547991
+    ],
+    "channel_peak_error": [
+      23.17167830467224,
+      6.501782417297363,
+      51.816368103027344,
+      0.9366327449679375,
+      2.956291124224663,
+      0.4275997430086136
+    ],
+    "exceedance_recall": null
+  },
+  "constant_baseline": {
+    "channel_mae": [
+      0.8085491553030378,
+      0.5322142070759841,
+      1.0670990443131962,
+      0.018922588263785903,
+      0.05299197662178977,
+      0.046809859640000624
+    ],
+    "channel_peak_error": [
+      25.53346824645996,
+      2.7059531211853027,
+      46.10845375061035,
+      0.18735623359680176,
+      2.933767855167389,
+      0.24233201146125793
+    ],
+    "exceedance_recall": null
+  },
+  "mean_channel_mae": {
+    "model": 1.4984833530647823,
+    "constant_baseline": 0.42109780520296575,
+    "relative_improvement": -2.5585161797329374
+  },
+  "beats_constant_baseline": false,
+  "beats_baseline_per_channel": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

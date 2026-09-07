@@ -1,0 +1,27 @@
+# Stage 5 alignment training -- normalized small-data overfit gate.
+#
+# Wrist force/torque inputs and targets use the released checkpoint's state q01/q99
+# values for channels [7:13]. This keeps wrench flow matching in the same numerical
+# regime as the checkpoint's quantile-normalized action targets.
+
+checkpoint: Facet-0/facet0-post-training
+dataset: ManuFacet-1K/Facet0-1
+split_path: configs/splits/facet0_1_seed20260903.json
+output_dir: runs/alignment/overfit_v2_normalized
+
+mode: overfit
+num_overfit_sequences: 64
+num_steps: 300
+batch_size: 8
+learning_rate: 1.0e-4
+seed: 0
+
+action_horizon: 50
+max_token_len: 200
+wrench_history_len: 10
+wrench_head_width: 512
+lambda_pre: 0.1
+wrench_normalization: checkpoint_state_quantile
+
+log_every: 10
+checkpoint_every: 100

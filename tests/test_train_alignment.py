@@ -16,6 +16,7 @@ from openpi.training import config as training_config
 
 from facet0.data.manufacet import ManuFacetDataset
 from facet0.data.transforms import EEF_DELTA_MASK, FacetInputs
+from facet0.data.wrench_windows import WrenchNormalizer
 from facet0.models.joint_action_wrench import JointActionWrenchConfig, JointActionWrenchModel, wrench_head_trainable_filter
 from openpi import transforms as openpi_transforms
 from facet0.training.train_alignment import (
@@ -207,6 +208,7 @@ def test_build_example_matches_production_pipeline_shapes():
     facet_inputs = FacetInputs()
     delta_actions = openpi_transforms.DeltaActions(EEF_DELTA_MASK)
     normalize_transform = openpi_transforms.Normalize(norm_stats, use_quantiles=True)
+    wrench_normalizer = WrenchNormalizer.from_openpi_norm_stats(norm_stats)
 
     dataset = ManuFacetDataset(DATASET)
     example = build_example(
@@ -217,6 +219,8 @@ def test_build_example_matches_production_pipeline_shapes():
         delta_actions=delta_actions,
         normalize_transform=normalize_transform,
         model_input_transforms=model_input_transforms,
+        wrench_normalizer=wrench_normalizer,
+        wrench_target_representation="absolute",
         action_horizon=50,
         wrench_history_len=10,
     )
@@ -234,6 +238,9 @@ def test_build_example_matches_production_pipeline_shapes():
     assert example["wrench_target_valid"].shape == (50,)
     assert np.all(np.isfinite(example["state"]))
     assert np.all(np.isfinite(example["actions"]))
+    # The released checkpoint's state quantiles define the same roughly [-1, 1]
+    # numerical regime used for action flow matching. Real outliers may exceed it.
+    assert np.quantile(np.abs(example["wrench_history"]), 0.9) < 3.0
 
 
 @pytest.mark.skipif(not (PROJECT_ROOT / "configs" / "splits").exists(), reason="no split file present")

@@ -297,6 +297,7 @@ configs/evaluation/robot_tasks.yaml 定义 RAM、CPU、Disk、GPU 和 retention-
 
 ## 主要报告
 
+- [可视化仪表盘](reports/visualizations/index.html)
 - [环境报告](reports/environment_final.json)
 - [Checkpoint 兼容性](reports/openpi_compatibility.md)
 - [数据审计](reports/dataset_audit.md)
@@ -305,6 +306,10 @@ configs/evaluation/robot_tasks.yaml 定义 RAM、CPU、Disk、GPU 和 retention-
 - [阶段 5–10 完成边界](reports/phases5_10_completion_status.md)
 - [最终 test 指标](reports/deterministic_full_pilot_test_264_policy_scale02.json)
 - [开发交接](HANDOFF.md)
+
+重新生成全部可视化：
+
+    MPLBACKEND=Agg third_party/openpi/.venv/bin/python +      scripts/generate_visualizations.py
 
 ## 可复现性规则
 

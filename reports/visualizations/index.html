@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FACET-0 离线复现可视化</title>
+<style>
+body { margin: 0; background: #f8fafc; color: #0f172a; font: 16px/1.6 system-ui, sans-serif; }
+main { max-width: 1180px; margin: auto; padding: 32px 22px 60px; }
+h1 { margin-bottom: 4px; } .subtitle { color: #475569; margin-top: 0; }
+.warning { background: #fff7ed; border-left: 5px solid #ea580c; padding: 14px 18px; margin: 22px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12px; }
+.card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+.card span { display: block; color: #64748b; font-size: 13px; }
+.card strong { display: block; font-size: 24px; margin-top: 4px; }
+section { background: white; margin-top: 24px; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0; }
+section h2 { margin: 0; } section p { color: #475569; }
+img { width: 100%; height: auto; display: block; }
+code { background: #e2e8f0; padding: 2px 5px; border-radius: 4px; }
+</style>
+</head>
+<body><main>
+<h1>FACET-0 离线复现可视化</h1>
+<p class="subtitle">公开 checkpoint、ManuFacet 子集与研究性近似模块，生成于 2026-09-07。</p>
+<div class="warning"><strong>重要：</strong>这些是开放环离线指标。当前没有真机闭环试验，
+不能与论文约 82% 的机器人成功率直接比较。</div>
+<div class="cards"><div class="card"><span>Validation improvement</span><strong>3.00%</strong></div><div class="card"><span>Test improvement</span><strong>1.62%</strong></div><div class="card"><span>Test model MAE</span><strong>1.0005</strong></div><div class="card"><span>Test baseline MAE</span><strong>1.0170</strong></div><div class="card"><span>Automated tests</span><strong>65 passed</strong></div><div class="card"><span>Robot success rate</span><strong>Not evaluated</strong></div></div>
+<section><h2>Flow head 训练曲线</h2><p>归一化修复了数值失稳，但 flow head 的验证 MAE 未超过基线。</p><img src="01_flow_training.png" alt="Flow head 训练曲线"></section><section><h2>确定性 residual 训练</h2><p>零 residual 等价于常数基线；分层池训练收敛稳定。</p><img src="02_deterministic_training.png" alt="确定性 residual 训练"></section><section><h2>实验结果总览</h2><p>不同报告的采样集合不同，柱图用于展示迭代方向，不作严格横向排名。</p><img src="03_model_vs_baseline.png" alt="实验结果总览"></section><section><h2>Residual scale 标定</h2><p>scale 只在 validation 选择为 0.2，随后冻结用于 test。</p><img src="04_residual_scale_calibration.png" alt="Residual scale 标定"></section><section><h2>Test 六通道 MAE</h2><p>264 个 test episodes；模型在 4/6 通道优于基线。</p><img src="05_test_channel_mae.png" alt="Test 六通道 MAE"></section><section><h2>动作块示例</h2><p>蓝线为模型的 50 步动作；虚线只是当前示范动作，不是未来真值。</p><img src="06_action_chunk.png" alt="动作块示例"></section><section><h2>公开数据分布</h2><p>task 0 和 8 占据绝大多数帧，长尾不平衡明显。</p><img src="07_dataset_distribution.png" alt="公开数据分布"></section>
+</main></body></html>
